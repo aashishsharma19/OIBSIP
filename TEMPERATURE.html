@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative Temperature Converter 🌡️</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      transition: background 0.5s ease;
+    }
+
+    .app {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 350px;
+      transition: 0.3s ease;
+    }
+
+    .app:hover {
+      transform: scale(1.03);
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 10px;
+      border: none;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    input:focus {
+      outline: 2px solid #fff;
+    }
+
+    select {
+      background-color: #ffffffcc;
+    }
+
+    .result {
+      margin-top: 20px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 18px;
+      min-height: 40px;
+    }
+
+    .thermometer {
+      position: relative;
+      width: 30px;
+      height: 200px;
+      background: #eee;
+      border-radius: 20px;
+      margin: 20px auto;
+      overflow: hidden;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .fill {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(to top, #ff5f6d, #ffc371);
+      border-radius: 20px;
+      transition: height 0.6s ease;
+    }
+
+    .emoji {
+      font-size: 35px;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .credit {
+      color: #fff;
+      margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>🌤️ Temperature Converter</h1>
+    <input type="number" id="tempInput" placeholder="Enter temperature" />
+    <select id="unitSelect">
+      <option value="C">Celsius (°C)</option>
+      <option value="F">Fahrenheit (°F)</option>
+      <option value="K">Kelvin (K)</option>
+    </select>
+
+    <div class="thermometer">
+      <div class="fill" id="fill"></div>
+    </div>
+
+    <div class="result" id="output">Converted Temperature: --</div>
+    <div class="emoji" id="emoji">🌈</div>
+
+
+  </div>
+
+  <script>
+    const tempInput = document.getElementById("tempInput");
+    const unitSelect = document.getElementById("unitSelect");
+    const output = document.getElementById("output");
+    const fill = document.getElementById("fill");
+    const emoji = document.getElementById("emoji");
+
+    tempInput.addEventListener("input", convert);
+    unitSelect.addEventListener("change", convert);
+
+    function convert() {
+      const val = parseFloat(tempInput.value);
+      const unit = unitSelect.value;
+      if (isNaN(val)) {
+        output.textContent = "Please enter a valid number";
+        fill.style.height = "0%";
+        emoji.textContent = "❓";
+        document.body.style.background = "linear-gradient(135deg, #89f7fe, #66a6ff)";
+        return;
+      }
+
+      let c, f, k;
+      if (unit === "C") {
+        c = val;
+        f = (val * 9) / 5 + 32;
+        k = val + 273.15;
+      } else if (unit === "F") {
+        c = (val - 32) * 5 / 9;
+        f = val;
+        k = c + 273.15;
+      } else {
+        c = val - 273.15;
+        f = (c * 9) / 5 + 32;
+        k = val;
+      }
+
+      output.textContent = `${c.toFixed(2)}°C | ${f.toFixed(2)}°F | ${k.toFixed(2)}K`;
+
+      // Update thermometer fill based on Celsius temperature
+      const percent = Math.min(Math.max((c + 50) / 100, 0), 1) * 100;
+      fill.style.height = `${percent}%`;
+
+      // Change emoji & background
+      if (c < 0) {
+        emoji.textContent = "🥶";
+        document.body.style.background = "linear-gradient(135deg, #89f7fe, #66a6ff)";
+      } else if (c >= 0 && c < 20) {
+        emoji.textContent = "😊";
+        document.body.style.background = "linear-gradient(135deg, #a1c4fd, #c2e9fb)";
+      } else if (c >= 20 && c < 35) {
+        emoji.textContent = "😎";
+        document.body.style.background = "linear-gradient(135deg, #f6d365, #fda085)";
+      } else {
+        emoji.textContent = "🥵";
+        document.body.style.background = "linear-gradient(135deg, #ff5f6d, #ffc371)";
+      }
+    }
+  </script>
+</body>
+</html>
